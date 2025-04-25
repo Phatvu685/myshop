@@ -1,11 +1,11 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const { createUser, findUserByEmail } = require('../models/userModel');
+const { createUser: modelCreateUser, findUserByEmail: modelFindUserByEmail } = require('../model/userModel');
 
 async function register({ username, email, password, full_name, phone, address }) {
     try {
         const hashedPassword = await bcrypt.hash(password, 10);
-        const userId = await createUser({
+        const userId = await modelCreateUser({
             username,
             email,
             password_hash: hashedPassword,
@@ -21,7 +21,7 @@ async function register({ username, email, password, full_name, phone, address }
 
 async function login({ email, password }) {
     try {
-        const user = await findUserByEmail(email);
+        const user = await modelFindUserByEmail(email);
         if (!user) throw new Error('User not found');
 
         const isMatch = await bcrypt.compare(password, user.password_hash);

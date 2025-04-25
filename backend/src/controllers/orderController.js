@@ -1,9 +1,9 @@
-const { createOrder, getOrders, getOrder, updateOrderStatus } = require('../services/orderService');
+const { createOrder: serviceCreateOrder, getOrders: serviceGetOrders, getOrder: serviceGetOrder, updateOrderStatus: serviceUpdateOrderStatus } = require('../services/orderService');
 
 async function createOrder(req, res) {
     try {
         const { shipping_address, recipient_name, recipient_phone, payment_method } = req.body;
-        const orderId = await createOrder({
+        const orderId = await serviceCreateOrder({
             user_id: req.user.user_id,
             shipping_address,
             recipient_name,
@@ -18,7 +18,7 @@ async function createOrder(req, res) {
 
 async function getOrders(req, res) {
     try {
-        const orders = await getOrders(req.user.user_id);
+        const orders = await serviceGetOrders(req.user.user_id);
         res.json({ success: true, orders });
     } catch (error) {
         res.status(500).json({ success: false, message: error.message });
@@ -27,7 +27,7 @@ async function getOrders(req, res) {
 
 async function getOrder(req, res) {
     try {
-        const order = await getOrder(req.params.id);
+        const order = await serviceGetOrder(req.params.id);
         res.json({ success: true, order });
     } catch (error) {
         res.status(404).json({ success: false, message: error.message });
@@ -38,7 +38,7 @@ async function updateOrderStatus(req, res) {
     try {
         const { id } = req.params;
         const { status } = req.body;
-        const affectedRows = await updateOrderStatus(id, status);
+        const affectedRows = await serviceUpdateOrderStatus(id, status);
         if (!affectedRows) throw new Error('Order not found');
         res.json({ success: true, message: 'Order status updated' });
     } catch (error) {

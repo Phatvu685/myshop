@@ -1,8 +1,8 @@
-const { getPageBySlug } = require('../models/staticPageModel');
+const { getPageBySlug: modelGetPageBySlug } = require('../model/staticPageModel');
 
 async function getPage(slug) {
     try {
-        const page = await getPageBySlug(slug);
+        const page = await modelGetPageBySlug(slug);
         if (!page) throw new Error('Page not found');
         return page;
     } catch (error) {

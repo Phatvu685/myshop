@@ -1,8 +1,8 @@
-const { getCartByUserId, addCartItem, updateCartItem, deleteCartItem, getOrCreateCart } = require('../models/cartModel');
+const { getCartByUserId: modelGetCartByUserId, addCartItem: modelAddCartItem, updateCartItem: modelUpdateCartItem, deleteCartItem: modelDeleteCartItem, getOrCreateCart: modelGetOrCreateCart } = require('../model/cartModel');
 
 async function getCart(user_id) {
     try {
-        return await getCartByUserId(user_id);
+        return await modelGetCartByUserId(user_id);
     } catch (error) {
         throw new Error(`Failed to fetch cart: ${error.message}`);
     }
@@ -10,8 +10,8 @@ async function getCart(user_id) {
 
 async function addCartItem({ user_id, product_id, quantity }) {
     try {
-        const cart_id = await getOrCreateCart(user_id);
-        return await addCartItem({ cart_id, product_id, quantity });
+        const cart_id = await modelGetOrCreateCart(user_id);
+        return await modelAddCartItem({ cart_id, product_id, quantity });
     } catch (error) {
         throw new Error(`Failed to add cart item: ${error.message}`);
     }
@@ -19,7 +19,7 @@ async function addCartItem({ user_id, product_id, quantity }) {
 
 async function updateCartItem(cart_item_id, quantity) {
     try {
-        return await updateCartItem(cart_item_id, quantity);
+        return await modelUpdateCartItem(cart_item_id, quantity);
     } catch (error) {
         throw new Error(`Failed to update cart item: ${error.message}`);
     }
@@ -27,7 +27,7 @@ async function updateCartItem(cart_item_id, quantity) {
 
 async function deleteCartItem(cart_item_id) {
     try {
-        return await deleteCartItem(cart_item_id);
+        return await modelDeleteCartItem(cart_item_id);
     } catch (error) {
         throw new Error(`Failed to delete cart item: ${error.message}`);
     }

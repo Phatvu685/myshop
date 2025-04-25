@@ -1,8 +1,8 @@
-const { getProducts, getProductById } = require('../services/productService');
+const { getProducts: serviceGetProducts, getProductById: serviceGetProductById } = require('../services/productService');
 
 async function getProducts(req, res) {
     try {
-        const products = await getProducts(req.query);
+        const products = await serviceGetProducts(req.query);
         res.json({ success: true, products });
     } catch (error) {
         res.status(500).json({ success: false, message: error.message });
@@ -11,7 +11,7 @@ async function getProducts(req, res) {
 
 async function getProductById(req, res) {
     try {
-        const product = await getProductById(req.params.id);
+        const product = await serviceGetProductById(req.params.id);
         res.json({ success: true, product });
     } catch (error) {
         res.status(404).json({ success: false, message: error.message });

@@ -1,9 +1,9 @@
-const { createReview, getReviews } = require('../services/reviewService');
+const { createReview: serviceCreateReview, getReviews: serviceGetReviews } = require('../services/reviewService');
 
 async function createReview(req, res) {
     try {
         const { product_id, rating, comment } = req.body;
-        const reviewId = await createReview({
+        const reviewId = await serviceCreateReview({
             product_id,
             user_id: req.user.user_id,
             rating,
@@ -17,7 +17,7 @@ async function createReview(req, res) {
 
 async function getReviews(req, res) {
     try {
-        const reviews = await getReviews(req.params.product_id);
+        const reviews = await serviceGetReviews(req.params.product_id);
         res.json({ success: true, reviews });
     } catch (error) {
         res.status(500).json({ success: false, message: error.message });

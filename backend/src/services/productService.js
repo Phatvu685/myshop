@@ -1,8 +1,8 @@
-const { getProducts, getProductById } = require('../models/productModel');
+const { getProducts: modelGetProducts, getProductById: modelGetProductById } = require('../model/productModel');
 
 async function getProducts(filters) {
     try {
-        return await getProducts(filters);
+        return await modelGetProducts(filters);
     } catch (error) {
         throw new Error(`Failed to fetch products: ${error.message}`);
     }
@@ -10,7 +10,7 @@ async function getProducts(filters) {
 
 async function getProductById(id) {
     try {
-        const product = await getProductById(id);
+        const product = await modelGetProductById(id);
         if (!product) throw new Error('Product not found');
         return product;
     } catch (error) {

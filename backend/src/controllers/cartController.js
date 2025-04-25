@@ -1,8 +1,8 @@
-const { getCart, addCartItem, updateCartItem, deleteCartItem } = require('../services/cartService');
+const { getCart: serviceGetCart, addCartItem: serviceAddCartItem, updateCartItem: serviceUpdateCartItem, deleteCartItem: serviceDeleteCartItem } = require('../services/cartService');
 
 async function getCart(req, res) {
     try {
-        const cart = await getCart(req.user.user_id);
+        const cart = await serviceGetCart(req.user.user_id);
         res.json({ success: true, cart });
     } catch (error) {
         res.status(500).json({ success: false, message: error.message });
@@ -12,7 +12,7 @@ async function getCart(req, res) {
 async function addCartItem(req, res) {
     try {
         const { product_id, quantity } = req.body;
-        const cartItemId = await addCartItem({
+        const cartItemId = await serviceAddCartItem({
             user_id: req.user.user_id,
             product_id,
             quantity,
@@ -27,7 +27,7 @@ async function updateCartItem(req, res) {
     try {
         const { cart_item_id } = req.params;
         const { quantity } = req.body;
-        const affectedRows = await updateCartItem(cart_item_id, quantity);
+        const affectedRows = await serviceUpdateCartItem(cart_item_id, quantity);
         if (!affectedRows) throw new Error('Cart item not found');
         res.json({ success: true, message: 'Cart item updated' });
     } catch (error) {
@@ -38,7 +38,7 @@ async function updateCartItem(req, res) {
 async function deleteCartItem(req, res) {
     try {
         const { cart_item_id } = req.params;
-        const affectedRows = await deleteCartItem(cart_item_id);
+        const affectedRows = await serviceDeleteCartItem(cart_item_id);
         if (!affectedRows) throw new Error('Cart item not found');
         res.json({ success: true, message: 'Cart item deleted' });
     } catch (error) {

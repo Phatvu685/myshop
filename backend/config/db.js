@@ -8,8 +8,6 @@ const dbConfig = {
     database: process.env.DB_NAME
 };
 
-console.log('DB Config:', dbConfig);
-
 async function connection() {
     try {
         const conn = await mysql.createConnection(dbConfig);
@@ -21,4 +19,4 @@ async function connection() {
     }
 }
 
-module.exports = { connection };
+module.exports = connection;
