@@ -37,6 +37,9 @@ async function getOrder(req, res) {
 async function updateOrderStatus(req, res) {
     try {
         const { id } = req.params;
+        if (!req.body || typeof req.body.status === 'undefined') {
+            return res.status(400).json({ success: false, message: 'Missing status in request body' });
+        }
         const { status } = req.body;
         const affectedRows = await serviceUpdateOrderStatus(id, status);
         if (!affectedRows) throw new Error('Order not found');

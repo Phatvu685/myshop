@@ -9,7 +9,7 @@ const Collections = () => {
             <div className="collection-card card border-0 d-flex flex-row align-items-end jarallax-keep-img">
               <img src="/images/collection-item1.jpg" alt="product-item" className="border-rounded-10 img-fluid jarallax-img" />
               <div className="card-detail p-3 m-3 p-lg-5 m-lg-5">
-                <h3 className="card-title display-3"><a href="#">Minimal Collection</a></h3>
+                <h3 className="card-title display-3"><button className="btn btn-link p-0 m-0 text-decoration-none text-reset">Minimal Collection</button></h3>
                 <a href="/" className="text-uppercase mt-3 d-inline-block text-hover fw-bold">Shop Now</a>
               </div>
             </div>
@@ -19,7 +19,7 @@ const Collections = () => {
             <div className="collection-card card border-0 d-flex flex-row jarallax-keep-img">
               <img src="/images/collection-item2.jpg" alt="product-item" className="border-rounded-10 img-fluid jarallax-img" />
               <div className="card-detail p-3 m-3 p-lg-5 m-lg-5">
-                <h3 className="card-title display-3"><a href="#">Sneakers Collection</a></h3>
+                <h3 className="card-title display-3"><button className="btn btn-link p-0 m-0 text-decoration-none text-reset">Sneakers Collection</button></h3>
                 <a href="/" className="text-uppercase mt-3 d-inline-block text-hover fw-bold">Shop Now</a>
               </div>
             </div>

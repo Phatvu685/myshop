@@ -7,7 +7,7 @@ async function createOrder({ user_id, shipping_address, recipient_name, recipien
         if (!cartItems.length) throw new Error('Cart is empty');
 
         let total_amount = 0;
-        const shipping_fee = 10.00; // Giả định phí vận chuyển
+        const shipping_fee = 10.00; 
         for (const item of cartItems) {
             const price = item.discount_price || item.price;
             total_amount += price * item.quantity;

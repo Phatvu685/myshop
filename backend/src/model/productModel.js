@@ -1,8 +1,7 @@
-const { connection } = require('../../config/db');
+const db = require('../../config/db');
 
 async function getProducts({ category_id, brand_id, min_price, max_price, sort_by, page, limit, search }) {
     try {
-        const conn = await connection();
         const offset = (page - 1) * limit;
         let query = `
             SELECT p.*, c.name AS category_name, b.name AS brand_name
@@ -41,8 +40,7 @@ async function getProducts({ category_id, brand_id, min_price, max_price, sort_b
         query += ' LIMIT ? OFFSET ?';
         params.push(parseInt(limit), parseInt(offset));
 
-        const [products] = await conn.query(query, params);
-        await conn.end();
+        const [products] = await db.query(query, params);
         return products;
     } catch (error) {
         throw new Error(`Failed to fetch products: ${error.message}`);
@@ -51,8 +49,7 @@ async function getProducts({ category_id, brand_id, min_price, max_price, sort_b
 
 async function getProductById(id) {
     try {
-        const conn = await connection();
-        const [products] = await conn.query(
+        const [products] = await db.query(
             `
             SELECT p.*, c.name AS category_name, b.name AS brand_name
             FROM products p
@@ -63,13 +60,12 @@ async function getProductById(id) {
             [id]
         );
         if (!products[0]) {
-            await conn.end();
             return null;
         }
 
-        const [images] = await conn.query('SELECT * FROM product_images WHERE product_id = ?', [id]);
-        const [specs] = await conn.query('SELECT * FROM product_specifications WHERE product_id = ?', [id]);
-        const [reviews] = await conn.query(
+        const [images] = await db.query('SELECT * FROM product_images WHERE product_id = ?', [id]);
+        const [specs] = await db.query('SELECT * FROM product_specifications WHERE product_id = ?', [id]);
+        const [reviews] = await db.query(
             `
             SELECT r.*, u.username
             FROM reviews r
@@ -79,11 +75,47 @@ async function getProductById(id) {
             [id]
         );
 
-        await conn.end();
         return { ...products[0], images, specifications: specs, reviews };
     } catch (error) {
         throw new Error(`Failed to fetch product: ${error.message}`);
     }
 }
 
-module.exports = { getProducts, getProductById };
+async function addProduct({ name, category_id, brand_id, price, description, created_at }) {
+    try {
+        const [result] = await db.query(
+            `INSERT INTO products (name, category_id, brand_id, price, description, created_at)
+             VALUES (?, ?, ?, ?, ?, ?)`,
+            [name, category_id, brand_id, price, description, created_at]
+        );
+        return result.insertId;
+    } catch (error) {
+        throw new Error(`Failed to add product: ${error.message}`);
+    }
+}
+
+async function updateProduct(id, { name, category_id, brand_id, price, description }) {
+    try {
+        const [result] = await db.query(
+            `UPDATE products SET name = ?, category_id = ?, brand_id = ?, price = ?, description = ? WHERE product_id = ?`,
+            [name, category_id, brand_id, price, description, id]
+        );
+        return result.affectedRows > 0;
+    } catch (error) {
+        throw new Error(`Failed to update product: ${error.message}`);
+    }
+}
+
+async function deleteProduct(id) {
+    try {
+        const [result] = await db.query(
+            `DELETE FROM products WHERE product_id = ?`,
+            [id]
+        );
+        return result.affectedRows > 0;
+    } catch (error) {
+        throw new Error(`Failed to delete product: ${error.message}`);
+    }
+}
+
+module.exports = { getProducts, getProductById, addProduct, updateProduct, deleteProduct };

@@ -8,15 +8,15 @@ const dbConfig = {
     database: process.env.DB_NAME
 };
 
-async function connection() {
-    try {
-        const conn = await mysql.createConnection(dbConfig);
-        console.log('Connected to MySQL database successfully');
-        return conn;
-    } catch (error) {
-        console.error('MySQL Connection Error:', error.message);
-        throw error;
-    }
-}
+console.log('DB Config:', dbConfig);
 
-module.exports = connection;
+const pool = mysql.createPool(dbConfig);
+
+pool.getConnection()
+    .then(() => console.log('Connected to MySQL database successfully'))
+    .catch((error) => {
+        console.error('MySQL Connection Error:', error.message);
+        process.exit(1);
+    });
+
+module.exports = pool;

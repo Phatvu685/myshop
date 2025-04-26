@@ -15,7 +15,7 @@ const CouponBanner = () => {
             </div>
             <div className="col-lg-3 col-md-12">
               <div className="btn-wrap">
-                <a href="#" className="btn btn-black btn-medium text-uppercase hvr-sweep-to-right">Email me</a>
+                <button className="btn btn-black btn-medium text-uppercase hvr-sweep-to-right" type="button">Email me</button>
               </div>
             </div>
           </div>

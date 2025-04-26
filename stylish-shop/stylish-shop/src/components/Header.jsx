@@ -1,122 +1,112 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { login, getCart } from '../utils/api';
 
 const Header = () => {
+  const [user, setUser] = useState(null);
+  const [cartItems, setCartItems] = useState([]);
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      // Fetch user data or cart
+      getCart().then((res) => setCartItems(res.data));
+    }
+  }, []);
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    try {
+      const { data } = await login({
+        email: e.target.email.value,
+        password: e.target.password.value,
+      });
+      localStorage.setItem('token', data.token);
+      setUser(data.user);
+      getCart().then((res) => setCartItems(res.data));
+    } catch (error) {
+      alert(error.response.data.message);
+    }
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    setUser(null);
+    setCartItems([]);
+  };
+
   return (
-    <header id="header" className="site-header text-black">
-      <div className="header-top border-bottom py-2">
-        <div className="container-lg">
-          <div className="row justify-content-evenly">
-            <div className="col">
-              <ul className="social-links list-unstyled d-flex m-0">
-                <li className="pe-2">
-                  <a href="#"><svg className="facebook" width="20" height="20"><use xlinkHref="#facebook" /></svg></a>
+    <header>
+      <nav className="navbar navbar-expand-lg fixed-top">
+        <div className="container">
+          <a className="navbar-brand" href="/">
+            <img src="/images/logo.png" alt="Logo" />
+          </a>
+          <button className="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#bdNavbar">
+            <svg className="navbar-icon"><use href="#navbar-icon"></use></svg>
+          </button>
+          <div className="offcanvas offcanvas-end" id="bdNavbar">
+            <div className="offcanvas-header">
+              <button type="button" className="btn-close" data-bs-dismiss="offcanvas"></button>
+            </div>
+            <div className="offcanvas-body">
+              <ul className="navbar-nav mx-auto">
+                <li className="nav-item"><a className="nav-link" href="/">Home</a></li>
+                <li className="nav-item"><a className="nav-link" href="/shop">Shop</a></li>
+                <li className="nav-item"><a className="nav-link" href="/about">About</a></li>
+                <li className="nav-item"><a className="nav-link" href="/contact">Contact</a></li>
+              </ul>
+              <ul className="navbar-nav">
+                <li className="nav-item">
+                  <button className="nav-link btn btn-link p-0 m-0 text-decoration-none text-reset" type="button" data-bs-toggle="collapse" data-bs-target="#search-box" aria-label="Toggle search">
+                    <svg className="search"><use href="#search"></use></svg>
+                  </button>
                 </li>
-                <li className="pe-2">
-                  <a href="#"><svg className="instagram" width="20" height="20"><use xlinkHref="#instagram" /></svg></a>
+                <li className="nav-item">
+                  {user ? (
+                    <button className="nav-link btn btn-link p-0 m-0 text-decoration-none text-reset" type="button" onClick={handleLogout}>Logout</button>
+                  ) : (
+                    <button className="nav-link btn btn-link p-0 m-0 text-decoration-none text-reset" type="button" data-bs-toggle="modal" data-bs-target="#modallogin">Login</button>
+                  )}
                 </li>
-                <li className="pe-2">
-                  <a href="#"><svg className="youtube" width="20" height="20"><use xlinkHref="#youtube" /></svg></a>
-                </li>
-                <li>
-                  <a href="#"><svg className="pinterest" width="20" height="20"><use xlinkHref="#pinterest" /></svg></a>
+                <li className="nav-item">
+                  <button className="nav-link btn btn-link p-0 m-0 text-decoration-none text-reset" type="button" data-bs-toggle="modal" data-bs-target="#modallong" aria-label="Open cart">
+                    <svg className="shopping-cart"><use href="#shopping-cart"></use></svg>
+                    <span>{cartItems.length}</span>
+                  </button>
                 </li>
               </ul>
             </div>
-            <div className="col d-none d-md-block">
-              <p className="text-center text-black m-0">
-                <strong>Special Offer</strong>: Free Shipping on all the orders above $100
-              </p>
-            </div>
-            <div className="col">
-              <ul className="d-flex justify-content-end gap-3 list-unstyled m-0">
-                <li><a href="#">Contact</a></li>
-                <li><a href="#">Cart</a></li>
-                <li><a href="#">Login</a></li>
-              </ul>
+          </div>
+        </div>
+      </nav>
+      <div className="collapse search-box" id="search-box">
+        <div className="card">
+          <div className="card-body">
+            <div className="input-group">
+              <input type="text" className="form-control" placeholder="Search for products" />
+              <button className="btn btn-outline-secondary" type="button">Search</button>
             </div>
           </div>
         </div>
       </div>
-
-      <nav id="header-nav" className="navbar navbar-expand-lg">
-        <div className="container-lg">
-          <a className="navbar-brand" href="/">
-            <img src="/images/main-logo.png" className="logo" alt="logo" />
-          </a>
-
-          <button className="navbar-toggler d-flex d-lg-none order-3 border-0 p-1 ms-2" type="button"
-            data-bs-toggle="offcanvas" data-bs-target="#bdNavbar" aria-controls="bdNavbar"
-            aria-expanded="false" aria-label="Toggle navigation">
-            <svg className="navbar-icon">
-              <use xlinkHref="#navbar-icon" />
-            </svg>
-          </button>
-
-          <div className="offcanvas offcanvas-end" tabIndex="-1" id="bdNavbar">
-            <div className="offcanvas-header px-4 pb-0">
-              <a className="navbar-brand ps-3" href="/">
-                <img src="/images/main-logo.png" className="logo" alt="logo" />
-              </a>
-              <button type="button" className="btn-close btn-close-black p-5" data-bs-dismiss="offcanvas" aria-label="Close"
-                data-bs-target="#bdNavbar"></button>
+      <div className="modal fade" id="modallogin">
+        <div className="modal-dialog modal-md modal-dialog-centered">
+          <div className="modal-content p-4">
+            <div className="modal-header border-0">
+              <h2 className="modal-title fs-3">Login</h2>
             </div>
-            <div className="offcanvas-body">
-              <ul id="navbar" className="navbar-nav fw-bold justify-content-end align-items-center flex-grow-1">
-                <li className="nav-item dropdown">
-                  <a className="nav-link me-5 active dropdown-toggle border-0" href="#" data-bs-toggle="dropdown">Home</a>
-                  <ul className="dropdown-menu fw-bold">
-                    <li><a href="/" className="dropdown-item">Home V1</a></li>
-                    <li><a href="/" className="dropdown-item">Home V2</a></li>
-                  </ul>
-                </li>
-                <li className="nav-item"><a className="nav-link me-5" href="#">Men</a></li>
-                <li className="nav-item"><a className="nav-link me-5" href="#">Women</a></li>
-                <li className="nav-item dropdown">
-                  <a className="nav-link me-5 dropdown-toggle border-0" href="#" data-bs-toggle="dropdown">Page</a>
-                  <ul className="dropdown-menu fw-bold">
-                    <li><a href="/" className="dropdown-item">About Us</a></li>
-                    <li><a href="/" className="dropdown-item">Shop</a></li>
-                    <li><a href="/" className="dropdown-item">Blog</a></li>
-                    <li><a href="/" className="dropdown-item">Single Product</a></li>
-                    <li><a href="/" className="dropdown-item">Single Post</a></li>
-                    <li><a href="/" className="dropdown-item">Styles</a></li>
-                    <li><a href="#" data-bs-toggle="modal" data-bs-target="#modallong" className="dropdown-item">Cart</a></li>
-                    <li><a href="#" data-bs-toggle="modal" data-bs-target="#modallogin" className="dropdown-item">Login</a></li>
-                  </ul>
-                </li>
-                <li className="nav-item"><a className="nav-link me-5" href="/">Shop</a></li>
-                <li className="nav-item"><a className="nav-link me-5" href="#">Sale</a></li>
-              </ul>
+            <div className="modal-body">
+              <form onSubmit={handleLogin}>
+                <input type="email" name="email" placeholder="Email Address *" className="mb-3 ps-3 text-input" required />
+                <input type="password" name="password" placeholder="Password" className="ps-3 text-input" required />
+                <div className="modal-footer mt-5 d-flex justify-content-center">
+                  <button type="submit" className="btn btn-red hvr-sweep-to-right">Login</button>
+                </div>
+              </form>
             </div>
-          </div>
-
-          <div className="user-items ps-0 ps-md-5">
-            <ul className="d-flex justify-content-end list-unstyled align-item-center m-0">
-              <li className="pe-3">
-                <a href="#" data-bs-toggle="modal" data-bs-target="#modallogin" className="border-0">
-                  <svg className="user" width="24" height="24">
-                    <use xlinkHref="#user" />
-                  </svg>
-                </a>
-              </li>
-              <li className="pe-3">
-                <a href="#" data-bs-toggle="modal" data-bs-target="#modallong" className="border-0">
-                  <svg className="shopping-cart" width="24" height="24">
-                    <use xlinkHref="#shopping-cart" />
-                  </svg>
-                </a>
-              </li>
-              <li>
-                <a href="#" className="search-item border-0" data-bs-toggle="collapse" data-bs-target="#search-box" aria-label="Toggle navigation">
-                  <svg className="search" width="24" height="24">
-                    <use xlinkHref="#search" />
-                  </svg>
-                </a>
-              </li>
-            </ul>
           </div>
         </div>
-      </nav>
+      </div>
     </header>
   );
 };

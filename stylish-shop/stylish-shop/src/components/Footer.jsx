@@ -10,13 +10,13 @@ const Footer = () => {
               <div className="footer-menu">
                 <h5 className="widget-title pb-2">{title}</h5>
                 <ul className="menu-list list-unstyled">
-                  <li className="pb-2"><a href="#">Track Your Order</a></li>
+                  <li className="pb-2"><button type="button" className="btn btn-link p-0 m-0 text-decoration-none text-reset">Track Your Order</button></li>
                   <li className="pb-2"><a href="/">Our Blog</a></li>
-                  <li className="pb-2"><a href="#">Privacy policy</a></li>
-                  <li className="pb-2"><a href="#">Shipping</a></li>
-                  <li className="pb-2"><a href="#">Contact Us</a></li>
-                  <li className="pb-2"><a href="#">Help</a></li>
-                  <li className="pb-2"><a href="#">Community</a></li>
+                  <li className="pb-2"><button type="button" className="btn btn-link p-0 m-0 text-decoration-none text-reset">Privacy policy</button></li>
+                  <li className="pb-2"><button type="button" className="btn btn-link p-0 m-0 text-decoration-none text-reset">Shipping</button></li>
+                  <li className="pb-2"><button type="button" className="btn btn-link p-0 m-0 text-decoration-none text-reset">Contact Us</button></li>
+                  <li className="pb-2"><button type="button" className="btn btn-link p-0 m-0 text-decoration-none text-reset">Help</button></li>
+                  <li className="pb-2"><button type="button" className="btn btn-link p-0 m-0 text-decoration-none text-reset">Community</button></li>
                 </ul>
               </div>
             </div>
