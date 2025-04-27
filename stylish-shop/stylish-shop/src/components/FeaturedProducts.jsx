@@ -1,7 +1,33 @@
-import React from 'react';
-import products from '../data/products';
+import React, { useEffect, useState } from 'react';
+import { fetchProducts } from '../utils/api';
 
 const FeaturedProducts = () => {
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    async function loadProducts() {
+      try {
+        const data = await fetchProducts();
+        setProducts(data);
+      } catch (err) {
+        setError('Failed to load products');
+      } finally {
+        setLoading(false);
+      }
+    }
+    loadProducts();
+  }, []);
+
+  if (loading) {
+    return <div>Loading featured products...</div>;
+  }
+
+  if (error) {
+    return <div>{error}</div>;
+  }
+
   return (
     <section id="featured-products" className="product-store">
       <div className="container-md">
@@ -14,10 +40,10 @@ const FeaturedProducts = () => {
         <div className="product-content padding-small">
           <div className="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-5">
             {products.map(product => (
-              <div className="col mb-4" key={product.id}>
+              <div className="col mb-4" key={product.product_id || product.id}>
                 <div className="product-card position-relative">
                   <div className="card-img">
-                    <img src={product.image} alt={product.name} className="product-image img-fluid" />
+                    <img src={product.image || product.images?.[0] || '/images/card-item1.jpg'} alt={product.name} className="product-image img-fluid" />
                     <div className="cart-concern position-absolute d-flex justify-content-center">
                       <div className="cart-button d-flex gap-2 justify-content-center align-items-center">
                         <button type="button" className="btn btn-light" data-bs-toggle="modal" data-bs-target="#modallong">
@@ -33,7 +59,7 @@ const FeaturedProducts = () => {
                     <h3 className="card-title fs-6 fw-normal m-0">
                       <a href="/">{product.name}</a>
                     </h3>
-                    <span className="card-price fw-bold">${product.price}</span>
+                    <span className="card-price fw-bold">${product.price || product.discount_price}</span>
                   </div>
                 </div>
               </div>

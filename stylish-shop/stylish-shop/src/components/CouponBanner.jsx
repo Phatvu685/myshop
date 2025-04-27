@@ -1,25 +1,42 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { getPromotions } from '../utils/api';
 
 const CouponBanner = () => {
+  const [promotions, setPromotions] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    async function loadPromotions() {
+      try {
+        const data = await getPromotions();
+        setPromotions(data);
+      } catch (err) {
+        setError('Failed to load promotions');
+      } finally {
+        setLoading(false);
+      }
+    }
+    loadPromotions();
+  }, []);
+
+  if (loading) {
+    return <div>Loading promotions...</div>;
+  }
+
+  if (error) {
+    return <div>{error}</div>;
+  }
+
   return (
-    <section className="discount-coupon py-2 my-2 py-md-5 my-md-5">
-      <div className="container">
-        <div className="bg-gray coupon position-relative p-5">
-          <div className="bold-text position-absolute">10% OFF</div>
-          <div className="row justify-content-between align-items-center">
-            <div className="col-lg-7 col-md-12 mb-3">
-              <div className="coupon-header">
-                <h2 className="display-7">10% OFF Discount Coupons</h2>
-                <p className="m-0">Subscribe us to get 10% OFF on all the purchases</p>
-              </div>
-            </div>
-            <div className="col-lg-3 col-md-12">
-              <div className="btn-wrap">
-                <button className="btn btn-black btn-medium text-uppercase hvr-sweep-to-right" type="button">Email me</button>
-              </div>
-            </div>
+    <section id="coupon-banner" className="coupon-banner">
+      <div className="container-md">
+        {promotions.map((promo) => (
+          <div key={promo.promotion_id || promo.id} className="promotion-item">
+            <h3>{promo.title}</h3>
+            <p>{promo.description}</p>
           </div>
-        </div>
+        ))}
       </div>
     </section>
   );
